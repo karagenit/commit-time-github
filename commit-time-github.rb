@@ -24,6 +24,15 @@ def get_repo(user, repo)
   CommitTime.new(dates)
 end
 
-def get_user(user)
+def get_repo_list(user)
+  token = File.read('api.token')
+  query = File.read('user.graphql')
+  vars = { user: user }
 
+  result = Github.query(token, query, vars)
+
+  p result
+end
+
+def get_all_repos(user)
 end
