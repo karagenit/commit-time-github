@@ -8,9 +8,13 @@ def get_repo(user, repo)
   query = File.read('repo.graphql')
   vars = { user: user, repo: repo }
 
-  data = Github.query(token, query, vars)
+  result = Github.query(token, query, vars)
+  
+  commits = result["data"]["repository"]["defaultBranchRef"]["target"]["history"]["edges"]
+  commits.select! { |e| e["node"]["author"]["user"]["login"] == user }
+  commits.map! { |e| e["node"]["authoredDate"] }
 
-  p data
+  p commits
 
   # TODO: paginate
 end
