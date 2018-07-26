@@ -4,6 +4,11 @@ require 'github/graphql'
 require 'commit-time'
 require 'date'
 
+##
+# Returns a CommitTime object from a given Github repo
+#
+# TODO: paginate
+#
 def get_repo(user, repo)
   token = File.read('api.token')
   query = File.read('repo.graphql')
@@ -16,13 +21,7 @@ def get_repo(user, repo)
   dates = commits.map { |e| e["node"]["authoredDate"] }
   dates.map! { |date| DateTime.parse(date) }
 
-  times = CommitTime.new(dates)
-
-  puts "Total: #{(times.total_time / 60).floor} Hours, #{(times.total_time % 60).round} Minutes"
-  puts "Average: #{times.average_time.round} Minutes"
-  puts "Commits: #{times.commits}"
-
-  # TODO: paginate
+  CommitTime.new(dates)
 end
 
 def get_user(user)
