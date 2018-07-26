@@ -21,7 +21,11 @@ def get_repo(user, repo, author: user)
 
   result = Github.query(token, query, vars)
   
-  commits = result["data"]["repository"]["defaultBranchRef"]["target"]["history"]["edges"]
+  commits = result.dig("data", "repository", "defaultBranchRef", "target", "history", "edges")
+
+  # Empty repo with no commits or default branch
+  return nil if commits.nil?
+
   commits.select! { |e| e.dig("node", "author", "user", "login") == author }
   dates = commits.map { |e| e["node"]["authoredDate"] }
   dates.map! { |date| DateTime.parse(date) }
@@ -44,7 +48,12 @@ def get_repo_list(user)
 end
 
 def get_all_repos(user)
-  get_repo_list(user).map do |repo|
-    get_repo(repo[:owner], repo[:name], author: user)
+  values = get_repo_list(user).map do |repo|
+    owner = repo[:owner]
+    name = repo[:name]
+    { name: "#{owner}/#{name}", times: get_repo(owner, name, author: user) }
   end
+
+  # Remove entries where get_repo returned nil i.e. there was an issue with it
+  values.select { |val| !val[:times].nil? }
 end
