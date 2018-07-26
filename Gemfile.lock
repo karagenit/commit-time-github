@@ -1,0 +1,14 @@
+GEM
+  specs:
+    github-graphql (1.2.2)
+      json (~> 2.1)
+    json (2.1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  github-graphql (~> 1.2)
+
+BUNDLED WITH
+   1.16.0
