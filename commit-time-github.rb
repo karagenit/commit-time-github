@@ -28,6 +28,9 @@ def get_repo(user, repo, author: user)
   CommitTime.new(dates)
 end
 
+##
+# TODO: paginate
+#
 def get_repo_list(user)
   token = File.read('api.token')
   query = File.read('user.graphql')
@@ -35,7 +38,8 @@ def get_repo_list(user)
 
   result = Github.query(token, query, vars)
 
-  p result
+  repos = result["data"]["user"]["repositories"]["edges"]
+  repos.map { |e| { owner: e["node"]["owner"]["login"], name: e["node"]["name"] } }
 end
 
 def get_all_repos(user)
