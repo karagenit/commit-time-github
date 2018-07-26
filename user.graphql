@@ -1,0 +1,19 @@
+query ($user: String!, $cursor: String) {
+    user(login: $user) {
+        repositories(first: 2, after: $cursor) {
+            edges {
+                node {
+                    name
+                        owner {
+                            login
+                        }
+                }
+                cursor
+            }
+            pageInfo {
+                hasNextPage
+            }
+        }
+    }
+}
+
