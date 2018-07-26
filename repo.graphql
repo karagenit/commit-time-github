@@ -3,7 +3,7 @@ query ($user: String!, $repo: String!, $cursor: String) {
         defaultBranchRef {
             target {
                 ... on Commit {
-                    history(first: 2, after: $cursor) {
+                    history(first: 100, after: $cursor) {
                         edges {
                             node {
                                 author {
