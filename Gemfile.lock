@@ -1,5 +1,7 @@
 GEM
+  remote: https://rubygems.org/
   specs:
+    commit-time (1.0.0)
     github-graphql (1.2.2)
       json (~> 2.1)
     json (2.1.0)
@@ -8,6 +10,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  commit-time (~> 1.0)
   github-graphql (~> 1.2)
 
 BUNDLED WITH
