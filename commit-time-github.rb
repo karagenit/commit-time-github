@@ -14,8 +14,7 @@ require 'date'
 # TODO: rename user -> owner
 # TODO: use :dig more
 #
-def get_repo(user, repo, author: user)
-  token = File.read('api.token')
+def get_repo(token, user, repo, author: user)
   query = File.read('repo.graphql')
   vars = { user: user, repo: repo }
 
@@ -36,8 +35,7 @@ end
 ##
 # TODO: paginate
 #
-def get_repo_list(user)
-  token = File.read('api.token')
+def get_repo_list(token, user)
   query = File.read('user.graphql')
   vars = { user: user }
 
@@ -47,11 +45,11 @@ def get_repo_list(user)
   repos.map { |e| { owner: e["node"]["owner"]["login"], name: e["node"]["name"] } }
 end
 
-def get_all_repos(user)
-  values = get_repo_list(user).map do |repo|
+def get_all_repos(token, user)
+  values = get_repo_list(token, user).map do |repo|
     owner = repo[:owner]
     name = repo[:name]
-    { name: "#{owner}/#{name}", times: get_repo(owner, name, author: user) }
+    { name: "#{owner}/#{name}", times: get_repo(token, owner, name, author: user) }
   end
 
   # Remove entries where get_repo returned nil i.e. there was an issue with it
