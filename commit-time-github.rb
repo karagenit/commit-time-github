@@ -15,7 +15,7 @@ require 'date'
 # TODO: use :dig more
 #
 def get_repo(token, user, repo, author: user)
-  query = File.read('repo.graphql')
+  query = File.read(__dir__ + '/repo.graphql')
   vars = { user: user, repo: repo }
 
   result = Github.query(token, query, vars)
@@ -36,7 +36,7 @@ end
 # TODO: paginate
 #
 def get_repo_list(token, user)
-  query = File.read('user.graphql')
+  query = File.read(__dir__ + '/user.graphql')
   vars = { user: user }
 
   result = Github.query(token, query, vars)
