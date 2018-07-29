@@ -41,7 +41,8 @@ def get_repo_list(token, user)
 
   result = Github.query(token, query, vars)
 
-  repos = result["data"]["user"]["repositories"]["edges"]
+  # TODO: handle errors better here?
+  repos = result.dig("data", "user", "repositories", "edges") || [] # empty array if nil
   repos.map { |e| { owner: e["node"]["owner"]["login"], name: e["node"]["name"] } }
 end
 
