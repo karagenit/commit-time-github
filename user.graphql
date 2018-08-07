@@ -8,10 +8,10 @@ query ($user: String!, $cursor: String) {
                             login
                         }
                 }
-                cursor
             }
             pageInfo {
                 hasNextPage
+                endCursor
             }
         }
     }

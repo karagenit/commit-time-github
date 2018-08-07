@@ -10,7 +10,6 @@ require 'date'
 # by default, equal to :user) are saved. Passing "" for :author will *jankily*
 # calculate times for all users.
 #
-# TODO: paginate
 # TODO: rename user -> owner
 # TODO: use :dig more
 #
@@ -41,16 +40,24 @@ def get_repo(token, user, repo, author: user)
 end
 
 ##
-# TODO: paginate
+# TODO: use #dig more
 #
 def get_repo_list(token, user)
   query = File.read(__dir__ + '/user.graphql')
   vars = { user: user }
 
-  result = Github.query(token, query, vars)
+  repos = []
+  continue = true
+  cursor = nil
 
-  # TODO: handle errors better here?
-  repos = result.dig("data", "user", "repositories", "edges") || [] # empty array if nil
+  while continue do
+    vars[:cursor] = cursor
+    result = Github.query(token, query, vars)
+    repos += result.dig("data", "user", "repositories", "edges").to_a
+    continue = result.dig("data", "user", "repositories", "pageInfo", "hasNextPage") || false
+    cursor = result.dig("data", "user", "repositories", "pageInfo", "endCursor")
+  end
+
   repos.map { |e| { owner: e["node"]["owner"]["login"], name: e["node"]["name"] } }
 end
 
