@@ -13,7 +13,10 @@ query ($user: String!, $repo: String!, $cursor: String) {
                                 }
                                 authoredDate
                             }
-                            cursor
+                        }
+                        pageInfo {
+                            hasNextPage
+                            endCursor
                         }
                     }
                 }

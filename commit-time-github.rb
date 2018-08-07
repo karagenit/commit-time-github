@@ -18,9 +18,17 @@ def get_repo(token, user, repo, author: user)
   query = File.read(__dir__ + '/repo.graphql')
   vars = { user: user, repo: repo }
 
-  result = Github.query(token, query, vars)
-  
-  commits = result.dig("data", "repository", "defaultBranchRef", "target", "history", "edges")
+  commits = []
+  continue = true
+  cursor = nil
+
+  while continue do
+    vars[:cursor] = cursor
+    result = Github.query(token, query, vars)
+    commits += result.dig("data", "repository", "defaultBranchRef", "target", "history", "edges").to_a
+    continue = result.dig("data", "repository", "defaultBranchRef", "target", "history", "pageInfo", "hasNextPage") || false
+    cursor = result.dig("data", "repository", "defaultBranchRef", "target", "history", "pageInfo", "endCursor")
+  end
 
   # Empty repo with no commits or default branch
   return nil if commits.nil?
